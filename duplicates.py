@@ -31,15 +31,20 @@ def are_files_duplicates(dir_list_one, dir_list_two):
 
 def remove_duplicate(file):
     try:
-        print(file)
         for f in file:
-            os.chmod(f, 0o666)
             os.remove(f)
             print("Дубликат удален который хранился по следующему пути = {0}".format(f))
-
     except PermissionError:
-        print("PermissionError")
-        print("Try chmod 666")
+        pass
+
+
+def chmod(file):
+    try:
+        for f in file:
+            os.chmod(f, 0o666)
+    except PermissionError:
+        pass
+
 
 if __name__ == '__main__':
     folder_one = input()
@@ -47,4 +52,5 @@ if __name__ == '__main__':
     files_in_folder_one = fill_list(folder_one)
     files_in_folder_two = fill_list(folder_two)
     duplicates = are_files_duplicates(files_in_folder_one, files_in_folder_two)
+    chmod(duplicates)
     remove_duplicate(duplicates)
