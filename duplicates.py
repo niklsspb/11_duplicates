@@ -1,15 +1,15 @@
 import os
 
 
-def fill_list(file_path):
-    file = []
-    if not os.path.exists(file_path):
+def fill_list(path_to_file):
+    list_files = []
+    if not os.path.exists(path_to_file):
         return None
-    for d, dirs, files in os.walk(file_path):
-        for f in files:
-            path = os.path.join(d, f)
-            file.append(path)
-    return file
+    for path_to_directory, folder, files in os.walk(path_to_file):
+        for file_name in files:
+            path = os.path.join(path_to_directory, file_name)
+            list_files.append(path)
+    return list_files
 
 
 def are_files_duplicates(filled_list_one, filled_list_two):
@@ -31,17 +31,17 @@ def are_files_duplicates(filled_list_one, filled_list_two):
 
 def remove_duplicate(list_of_duplicate_files):
     try:
-        for f in list_of_duplicate_files:
-            os.remove(f)
-            print("Дубликат удален который хранился по следующему пути = {0}".format(f))
+        for file_name in list_of_duplicate_files:
+            os.remove(file_name)
+            print("Дубликат удален который хранился по следующему пути = {0}".format(file_name))
     except PermissionError:
         pass
 
 
-def chmod(list_of_duplicate_files):
+def chmod_file(list_of_duplicate_files):
     try:
-        for f in list_of_duplicate_files:
-            os.chmod(f, 0o666)
+        for file_name in list_of_duplicate_files:
+            os.chmod(file_name, 0o666)
     except PermissionError:
         pass
 
@@ -52,5 +52,5 @@ if __name__ == '__main__':
     files_in_folder_one = fill_list(folder_one)
     files_in_folder_two = fill_list(folder_two)
     duplicates = are_files_duplicates(files_in_folder_one, files_in_folder_two)
-    chmod(duplicates)
+    chmod_file(duplicates)
     remove_duplicate(duplicates)
