@@ -12,35 +12,35 @@ def fill_list(file_path):
     return file
 
 
-def are_files_duplicates(dir_list_one, dir_list_two):
-    duplicate = []
-    for f1 in dir_list_one:
-        (dirname_list_one, fname_list_one) = os.path.split(f1)
-        size_list_one = os.path.getsize(os.path.join(dirname_list_one, fname_list_one))
-        for f2 in dir_list_two:
+def are_files_duplicates(filled_list_one, filled_list_two):
+    duplicate_list = []
+    for file_names_list_one in filled_list_one:
+        (directory_list_one, file_name_list_one) = os.path.split(file_names_list_one)
+        size_list_one = os.path.getsize(os.path.join(directory_list_one, file_name_list_one))
+        for file_names_list_two in filled_list_two:
             try:
-                (dirname_list_two, fname_list_two) = os.path.split(f2)
-                size_list_two = os.path.getsize(os.path.join(dirname_list_two, fname_list_two))
-                if fname_list_one == fname_list_two and size_list_one == size_list_two:
-                    full_name_two = os.path.join(dirname_list_two, fname_list_two)
-                    duplicate.append(full_name_two)
+                (directory_list_two, file_name_list_two) = os.path.split(file_names_list_two)
+                size_list_two = os.path.getsize(os.path.join(directory_list_two, file_name_list_two))
+                if file_name_list_one == file_name_list_two and size_list_one == size_list_two:
+                    full_name_file_two = os.path.join(directory_list_two, file_name_list_two)
+                    duplicate_list.append(full_name_file_two)
             except FileNotFoundError:
                 pass
-    return duplicate
+    return duplicate_list
 
 
-def remove_duplicate(file):
+def remove_duplicate(list_of_duplicate_files):
     try:
-        for f in file:
+        for f in list_of_duplicate_files:
             os.remove(f)
             print("Дубликат удален который хранился по следующему пути = {0}".format(f))
     except PermissionError:
         pass
 
 
-def chmod(file):
+def chmod(list_of_duplicate_files):
     try:
-        for f in file:
+        for f in list_of_duplicate_files:
             os.chmod(f, 0o666)
     except PermissionError:
         pass
