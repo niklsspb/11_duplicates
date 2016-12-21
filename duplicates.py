@@ -1,36 +1,41 @@
 import os
 
 
-def are_files_duplicates(file_path1, file_path_2):
-    files_dir_2 = []
-    for d, dirs, files in os.walk(file_path_2):
+def fill_list(file_path):
+    file = []
+    if not os.path.exists(file_path):
+        return None
+    for d, dirs, files in os.walk(file_path):
         for f in files:
             path = os.path.join(d, f)
-            files_dir_2.append(path)
+            file.append(path)
+    return file
 
-    files_dir_1 = []
-    for d, dirs, files in os.walk(file_path1):
-        for f in files:
-            path = os.path.join(d, f)
-            files_dir_1.append(path)
 
-    for f1 in files_dir_1:
-        (dirname, fname) = os.path.split(f1)
-        size = os.path.getsize(os.path.join(dirname, fname))
-        for f2 in files_dir_2:
+def are_files_duplicates(dir_list_one, dir_list_two):
+    for f1 in dir_list_one:
+        (dirname_list_one, fname_list_one) = os.path.split(f1)
+        size_list_one = os.path.getsize(os.path.join(dirname_list_one, fname_list_one))
+        for f2 in dir_list_two:
             try:
-                (dirname1, fname1) = os.path.split(f2)
-
-                size2 = os.path.getsize(os.path.join(dirname1, fname1))
-                if fname == fname1:
-                    if size == size2:
-                        print(fname, size)
-                        print("Дубликат файла удален {0}".format(os.path.join(dirname1, fname1)))
-                        os.remove(os.path.join(dirname1, fname1))
+                (dirname_list_two, fname_list_two) = os.path.split(f2)
+                size_list_two = os.path.getsize(os.path.join(dirname_list_two, fname_list_two))
+                if fname_list_one == fname_list_two and size_list_one == size_list_two:
+                    try:
+                        full_name_one = os.path.join(dirname_list_one, fname_list_one)
+                        full_name_two = os.path.join(dirname_list_two, fname_list_two)
+                        print("Find duplicate dir_one = {0} where_delete_dir = {1} ".format(full_name_one, full_name_two))
+                    except PermissionError:
+                        pass
+                    finally:
+                        os.chmod(full_name_two, 0o666)
+                        os.remove(full_name_two)
+                        print("Duplicate removed {0}".format(full_name_two))
             except FileNotFoundError:
                 pass
-folder_one = input()
-folder_two = input()
-are_files_duplicates(folder_one, folder_two)
+
+
 if __name__ == '__main__':
-    pass
+    folder_one = input()
+    folder_two = input()
+    are_files_duplicates(fill_list(folder_one), fill_list(folder_two))
